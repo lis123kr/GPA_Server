@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>GPA</title>
+	<script src='https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js'></script>
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+	<style type="text/css">
+		div.groupbox { 
+			width: 75%;			
+			height: auto;				
+			margin: 2em 0 1em 0;		
+			border: 1px solid #999;		
+			padding: 0 8px;			
+		}
+		div.groupbox h4 { 
+			line-height: 100%; 		
+			padding-left: 8px; 		
+			font-size: 1em;			
+			font-weight: normal;	
+		}
+		div.groupbox h4 span { 
+			background-color: #fff;	
+			color: #333;			
+			padding: 0 4px;		
+			position: relative; 
+			top: -1.1em;		
+		}
+		div.groupbox p {
+			margin-bottom: 1em;
+			line-height: 170%;
+		}
+
+
+		div.groupbox_ { 
+			width: 800px;			
+			height: auto;				
+			margin: 2em 0 1em 0;		
+			border: 1px solid #999;		
+			padding: 0 8px;			
+		}
+		div.groupbox_ h4 { 
+			line-height: 100%; 		
+			padding-left: 8px; 		
+			font-size: 1em;			
+			font-weight: normal;	
+		}
+		div.groupbox_ h4 span { 
+			background-color: #fff;	
+			color: #333;			
+			padding: 0 4px;		
+			position: relative; 
+			top: -1.1em;		
+		}
+		div.groupbox_ p {
+			margin-bottom: 1em;
+			line-height: 170%;
+		}
+
+	</style>
+	<script>
+		$(function(){
+			back_id = function(id){
+				$.get("{% url 'index' %}", {'id':id}, function(){
+					window.history.back();
+				});
+			}
+		});
+		
+	</script>
+</head>
+<body>
+<div class='container'>
+	<div class='row'>
+		<div class='col-sm-3'><h2>Sheet list</h2></div>
+		<div class='col-sm-1'><button class='btn btn-default' style="margin:20px 0px;" onclick="back_id(1)"><span class='glyphicon glyphicon-arrow-left'>back</span></button></div>
+	</div>
+
+	<form action="{% url 'some_view' %}" method="POST">
+
+	<table id='table' style="width: 70%" class='table table-striped table-hover'>
+	<thead>
+		<tr>
+		<th><input type="checkbox" name="_selected_all_"></th>
+		<th>{{filename}}</th>
+		</tr>
+	</thead>
+	{% for x in sheet_names %}
+	<tr>
+		<td><input type="checkbox" name="_selected_" value="{{x}}"></td>
+		<td>{{x}}</td>
+	</tr>
+	{% endfor %}
+	</table>
+	<br />
+
+	<div class='col-dm-2'>
+	
+	{% csrf_token %}
+		<div class='row'>
+			<div class='col-sm-8'>
+			<div class='groupbox_'>
+				<h4><span>column 값 설정</span></h4>
+				<div class='row'>
+				<div style="margin-left: 5%;">
+				<div class='col-sm-2'><label>Genome Structure</label>
+				<textarea name="genome" rows='10', cols='14'></textarea>
+				</div>
+				<br />
+				<div class='col-sm-2' style="margin-left: 5%;"><label>Repeat Region</label><textarea name="region" rows='10', cols='14'></textarea></div>
+
+				<div class='col-sm-2' style="margin-left: 5%;"><label>ORF</label><br /><textarea name="orf" rows='10', cols='14'></textarea></div>
+
+				<div class='col-sm-2' style="margin-left: 5%;"><label>NCR</label><textarea name="ncr" rows='10', cols='14'></textarea></div>
+				</div>
+				</div>
+				<br />
+			</div>
+			</div>
+		</div>
+
+	<div class='row'>
+		<div class='col-sm-3'>
+		<div class='groupbox'>
+			<h4><span>column 명</span></h4>
+			<div style="margin-left:15px;">
+			<h5>Duma Position</h5>
+			<select name="dm_position">
+			{% for col in cols%}
+				<option>{{col}}</option>
+			{% endfor %}
+			</select>
+			<h5>Duma Sequence</h5>
+			<select name="dm_seq">
+			{% for col in cols %}
+				<option>{{col}}</option>
+			{% endfor %}
+			</select>
+			<h5>Sequence</h5>
+			<select name="seq">
+			{% for col in cols %}
+				<option>{{col}}</option>
+			{% endfor %}
+			</select>
+			<h5>Genome Structure</h5>
+			<select name="col_genome">
+			{% for col in cols %}
+				<option>{{col}}</option>
+			{% endfor %}
+			</select>
+			<h5>Repeat Region</h5>
+			<select name="col_region">
+			{% for col in cols %}
+				<option>{{col}}</option>
+			{% endfor %}
+			</select>
+			<h5>ORF</h5>
+			<select name="col_orf">
+			{% for col in cols %}
+				<option>{{col}}</option>
+			{% endfor %}
+			</select>
+			</div>
+			<br /><br />
+		</div>
+		</div>
+		<div class='col-sm-3'>
+		<div class='groupbox'>
+			<h4><span>분석 타입 선택</span></h4>
+			<input type="radio" name='atype' style="margin-left:20px;" value="Difference_of_Minor">5% 이상 변화 추출<br /><br />
+			<input type="radio" name='atype' style="margin-left:20px;" value="Full" checked>Full Sequence<br /><br />
+		</div>
+		<br />
+		<button class='btn btn-default' type="submit"><span class='glyphicon glyphicon-arrow-right'>Submit</span></button>
+		</div>		
+	</div>
+	</form>
+	</div>
+</div>
+</body>
+</html>
+<script>
+	$('input[name=_selected_all_]').on('change', function(){
+ 		 	$('input[name=_selected_]').prop('checked', this.checked);
+	});
+	var arr = $('input[name=_selected_]:checked').serializeArray().map(function(item) { return item.value });
+</script>
