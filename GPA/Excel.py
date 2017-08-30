@@ -53,7 +53,7 @@ class Excel(object):
 		self.Region_idx = self.type_check(Repeat_edit_)
 		self.ORF = self.type_check(ORF_edit_)
 		self.NCR = self.type_check(NCR_edit_)
-
+		self.P1 = None
 		self.P0 = None
 		self.P_Raw35 = list()
         # Full Raw Sequence
@@ -62,7 +62,9 @@ class Excel(object):
 			tmp = self.xls.parse(x)
 			
 			if self.P0 is None:
-				self.P0 = tmp
+				self.P0 = tmp.copy()
+				self.P1 = tmp.copy()
+				self.P1 = self.P1[ self.P1[self.Ds_name] != '-']
 			else:
 				self.P0 = pd.merge(self.P0, tmp, how="outer", on=[self.Dge_name, self.Dre_name, self.Dorf, self.Dp_name, self.Ds_name])
 			self.P0 = self.P0[ self.P0[ self.Ds_name ] != '-' ]
@@ -576,7 +578,7 @@ class Excel(object):
 			cnt_num = 0
 			for ix in range(0, len(self.Genome_idx)):
 				ws['B' + str(rows[ix])] = self.Genome_idx[ix]
-				nlen = len(self.P0[ self.P0[ self.Dge_name ] == self.Genome_idx[ix]])
+				nlen = len(self.P1[ self.P1[ self.Dge_name ] == self.Genome_idx[ix]])
 				ws['C' + str(rows[ix])] = nlen
 				cnt_num += nlen
 			ws['B' + str(r+3+len(self.Genome_idx))] = "Total"
@@ -588,7 +590,7 @@ class Excel(object):
 			nrows = list(range(r+4+len(self.Genome_idx), nr))
 			for ix in range(0, len(self.Region_idx)):
 				ws['B' + str(nrows[ix])] = self.Region_idx[ix]
-				nlen = len(self.P0[ self.P0[ self.Dre_name ] == self.Region_idx[ix]])
+				nlen = len(self.P1[ self.P1[ self.Dre_name ] == self.Region_idx[ix]])
 				ws['C'+str(nrows[ix])] = nlen
 				cnt_num += nlen
 			ws['B'+str(nr)] = 'Total'
@@ -598,8 +600,8 @@ class Excel(object):
 			ws["A"+str(nr+1)] = "ORF"
 			ws["A"+str(nr+2)] = "NCR"
 			# ORF NCR Full Length
-			ws['C'+str(nr+1)] = len(self.P0[ self.P0[self.Dorf].isin(self.ORF)])
-			ws['C'+str(nr+2)] = len(self.P0[ self.P0[self.Dorf].isin(self.NCR)])
+			ws['C'+str(nr+1)] = len(self.P1[ self.P1[self.Dorf].isin(self.ORF)])
+			ws['C'+str(nr+2)] = len(self.P1[ self.P1[self.Dorf].isin(self.NCR)])
 
 			col = 'D'
 			ncol = 'D'
